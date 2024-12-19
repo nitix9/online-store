@@ -15,10 +15,14 @@
             <CardProduct v-for="item, index of products_data" :products-data="item" :course="course" v-bind:key="item.id"/>
         </div>
         </div>
+        <div class="pag-container"><div class="pagbut-cont" v-for="item of count_pages"><button @click="current_page=item;Pagination(arr_json,current_page);console.log(current_page)">{{item}}</button></div></div>
         </div>
     </div>
 </template>
 <style>
+.pagbut-cont{padding-right: 10px;}
+.pag-container{display: flex;justify-content: center;}
+.pag-container button{font-family: Inter;padding-top:5px ;padding-bottom: 5px;font-size: 1.125rem;color: white;background-color: #3077FB;border-radius: 5px;border:0;width:30px;}
 .button-wrapper{padding-left: 10px;}
 .button-wrapper button:active{background-color: #284f96;}
 .button-wrapper button {font-family: Inter;padding-top:5px ;padding-bottom: 5px;font-size: 1.125rem;color: white;background-color: #3077FB;border-radius: 5px;border:0}
@@ -35,7 +39,10 @@ export default{
         return{
             products_data:null,
             course:null,
-            url:'https://fakestoreapi.com/products'
+            url:'https://fakestoreapi.com/products',
+            arr_json:null,
+            count_pages:0,
+            current_page:1
         }
     },
     mounted(){
@@ -47,7 +54,11 @@ export default{
             fetch(this.url)
             .then((res)=>res.json())
             .then((json)=>{
-                this.products_data=json;
+                let strJson=JSON.stringify(json);
+                let jsonArray = JSON.parse(strJson);
+                this.arr_json=jsonArray;
+                this.count_pages=Math.ceil(jsonArray.length/10);
+                this.Pagination(jsonArray,this.current_page);
             });
         },
         getCourse(){
@@ -56,6 +67,11 @@ export default{
             .then((json)=>{
                 this.course=Math.round(json.Valute.USD.Value);
             });
+        },
+        Pagination(array, currentPage, pageSize = 10) {
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            this.products_data=array.slice(startIndex, endIndex);
         }
     }
 }
