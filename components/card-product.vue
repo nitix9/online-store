@@ -4,7 +4,9 @@
     <div class="price-card"><p>{{ Math.round((productsData.price * course)).toLocaleString('ru-RU')}} ₽</p></div>
     <div class="name-card"><p>{{ productsData.title }} / {{ productsData.category }}</p></div>
     <div class="evaluation-card"><img src="../image/star_ngeuw8us7zuc.svg"><p>{{productsData.rating.rate}}</p></div></NuxtLink>
-    <div class="cart-button"><button>В корзину</button></div>
+    <div class="cart-button"><button v-if="!(getNowInCart(productsData))" @click="addToCart(productsData);isHiden=true">В корзину</button>
+    <button v-else style="background-color:#679cff">В корзине</button>
+    </div>
 </div>
 </template>
 <style>
@@ -31,9 +33,41 @@ background-size: contain;background-position: center;border-radius: 20px;}
 .name-card{font-family: Inter;font-size: 1.125rem;font-weight: 400;padding-bottom: 7px;}
 .cart-button button{background-color:#3077FB ;width: 100%;padding:7px 0 7px 0;color: white;font-size: 1.125rem;font-family: Inter;font-weight: 400;border-radius: 10px;border: 0;  height: 40px;}
 .cart-button{padding-top:5px ;display: flex; justify-content: center;flex-grow: 1;align-items: flex-end;}
+@media screen and (max-width:615px) {
+    .card-wrapper{max-width: 150px;}
+}
+@media screen and (max-width:355px) {
+    .card-wrapper{max-width: 130px;}
+    .price-card p{font-size: 1rem;}
+    .name-card{font-size: 1rem;}
+}
 </style>
 <script>
+import { useCartStore } from "../store/index"
+const cartStore = useCartStore();
 export default{
+    data(){
+        return{
+            isHiden:false,
+        }
+    },
     props:["productsData","course"],
+    mounted(){
+        cartStore.initializeStore();
+    },
+    methods: {
+        addToCart(product) {
+            cartStore.addCart(product)
+        },
+        getNowInCart(product) {
+            const x = cartStore.cart?.find(el =>el.item.id===product.id)
+            if (x?.item?.id) {
+                return true
+            } else {
+                return false
+            }
+
+        }
+    },
 }
 </script>

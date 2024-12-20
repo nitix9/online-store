@@ -1,4 +1,5 @@
 <template>
+<CartBut />
 <div class="load" v-if="!current_data || !course_item"><p>Загрузка...</p></div>
 <div class="container-item" v-else>
     <div class="content-container">
@@ -12,7 +13,9 @@
             <div class="rate-rating"><img src="../../image/star_ngeuw8us7zuc.svg"><p> {{ current_data.rating.rate }}</p></div>
           </div>
           <div class="item-price"><p>{{Math.round((current_data.price * course_item)).toLocaleString('ru-RU') }} ₽</p></div>
-          <div class="cart-button"><button>В корзину</button></div>
+          <div class="cart-button"><button v-if="!(getNowInCart(current_data))" @click="addToCart(current_data);isHiden=true">В корзину</button>
+    <button v-else style="background-color:#679cff">В корзине</button>
+    </div>
         </div>
     </div>
 </div>
@@ -33,8 +36,16 @@
 .item-about p{font-family: Inter;font-weight: 400 ;}
 .content-container{display: flex;}
 .item-pict{min-width: 495px;width: 100%;border-radius: 20px;}
+@media screen and (max-width:800px) {
+    .content-container{flex-wrap: wrap;}
+    .item-pict{min-height: 400px;min-width: 0;}
+    .item-about{padding-left: 0;}
+    
+}
 </style>
 <script>
+import { useCartStore } from "../store/index"
+const cartStore = useCartStore();
 export default{
     data (){
         return{
@@ -47,6 +58,18 @@ export default{
         this.getCourse();
     },
     methods: {
+        addToCart(product) {
+            cartStore.addCart(product)
+        },
+        getNowInCart(product) {
+            const x = cartStore.cart?.find(el =>el.item.id==product.id)
+            if (x?.item?.id) {
+                return true
+            } else {
+                return false
+            }
+
+        },
         getCurrentProduct() {
             fetch(`https://fakestoreapi.com/products/${this.$route.params.id}`)
                 .then((res) => res.json())
