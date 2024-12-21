@@ -1,0 +1,1 @@
+import{_ as s}from"./BexCFbYm.js";import{_ as n,o as r,c as _,a as t,b as c,w as d,d as l,x as f,F as u}from"./KRDrTB3T.js";const m={},i={class:"logo"};function p(o,e){const a=s;return r(),_(u,null,[t("header",null,[t("div",i,[c(a,{to:"/"},{default:d(()=>e[0]||(e[0]=[l("FastTrader")])),_:1})])]),f(o.$slots,"default")],64)}const k=n(m,[["render",p]]);export{k as default};
